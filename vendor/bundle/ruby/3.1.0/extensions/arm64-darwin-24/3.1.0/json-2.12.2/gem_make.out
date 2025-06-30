@@ -1,0 +1,21 @@
+current directory: /Users/kevinwaisfeld/Documents/RightImpact/vendor/bundle/ruby/3.1.0/gems/json-2.12.2/ext/json/ext/parser
+/Users/kevinwaisfeld/.rbenv/versions/3.1.4/bin/ruby -I /Users/kevinwaisfeld/.rbenv/versions/3.1.4/lib/ruby/3.1.0 extconf.rb
+checking for rb_enc_interned_str() in ruby.h... yes
+checking for rb_hash_new_capa() in ruby.h... no
+checking for rb_hash_bulk_insert() in ruby.h... yes
+checking for strnlen() in string.h... yes
+checking for whether -std=c99 is accepted as CFLAGS... yes
+creating Makefile
+
+current directory: /Users/kevinwaisfeld/Documents/RightImpact/vendor/bundle/ruby/3.1.0/gems/json-2.12.2/ext/json/ext/parser
+make DESTDIR\= sitearchdir\=./.gem.20250602-52157-adt0cs sitelibdir\=./.gem.20250602-52157-adt0cs clean
+
+current directory: /Users/kevinwaisfeld/Documents/RightImpact/vendor/bundle/ruby/3.1.0/gems/json-2.12.2/ext/json/ext/parser
+make DESTDIR\= sitearchdir\=./.gem.20250602-52157-adt0cs sitelibdir\=./.gem.20250602-52157-adt0cs
+compiling parser.c
+linking shared-object json/ext/parser.bundle
+ld: warning: ignoring duplicate libraries: '-lruby.3.1'
+
+current directory: /Users/kevinwaisfeld/Documents/RightImpact/vendor/bundle/ruby/3.1.0/gems/json-2.12.2/ext/json/ext/parser
+make DESTDIR\= sitearchdir\=./.gem.20250602-52157-adt0cs sitelibdir\=./.gem.20250602-52157-adt0cs install
+/usr/bin/install -c -m 0755 parser.bundle ./.gem.20250602-52157-adt0cs/json/ext

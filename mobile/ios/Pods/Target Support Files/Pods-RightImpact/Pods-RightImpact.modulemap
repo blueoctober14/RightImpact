@@ -1,0 +1,6 @@
+module Pods_RightImpact {
+  umbrella header "Pods-RightImpact-umbrella.h"
+
+  export *
+  module * { export * }
+}

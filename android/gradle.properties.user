@@ -1,0 +1,71 @@
+# This file is used to configure the Android Gradle Plugin's behavior for this project.
+# You can add configuration options common to all sub-projects/modules here.
+# For more details, see https://developer.android.com/studio/build/gradle-tips
+
+# When configured, Gradle will run in incubating parallel mode.
+# This option should only be used with decoupled projects. More details, visit
+# http://www.gradle.org/docs/current/userguide/multi_project_builds.html#sec:decoupled_projects
+# org.gradle.parallel=true
+
+# AndroidX package structure to make it clearer which packages are bundled with the
+# Android operating system, and which are packaged with your app's APK
+# https://developer.android.com/topic/libraries/support-library/androidx-rn
+android.useAndroidX=true
+# Automatically convert third-party libraries to use AndroidX
+android.enableJetifier=true
+# Kotlin code style for this project: "official" or "obsolete"
+kotlin.code.style=official
+# Version of flipper SDK to use with React Native
+FLIPPER_VERSION=0.182.0
+# Enable the Network Inspector API for `XMLHttpRequest` and `fetch`
+# to inspect the network traffic with Flipper's Network plugin.
+# This is enabled by default, but you can disable it here.
+# FLIPPER_NETWORK_PLUGIN=true
+# Enable Hermes debugger for JSI.
+# This is enabled by default, but you can disable it here.
+# HERMES_DEBUGGER=true
+# Enable the new architecture.
+# This is disabled by default, but you can enable it here.
+# newArchEnabled=true
+# Enable the new app bundle format for React Native 0.64.0 and above.
+# This is disabled by default, but you can enable it here.
+# bundleInDebug=true
+# Enable the new Hermes debugger.
+# This is disabled by default, but you can enable it here.
+# hermesEnabled=true
+# Enable ProGuard in release builds.
+# This is disabled by default, but you can enable it here.
+# enableProguardInReleaseBuilds=true
+# Enable the network inspector.
+# This is enabled by default, but you can disable it here.
+# networkInspectorEnabled=true
+# Enable the new architecture.
+# This is disabled by default, but you can enable it here.
+# newArchEnabled=true
+# Enable the new app bundle format for React Native 0.64.0 and above.
+# This is disabled by default, but you can enable it here.
+# bundleInDebug=true
+# Enable the new Hermes debugger.
+# This is disabled by default, but you can enable it here.
+# hermesEnabled=true
+# Enable ProGuard in release builds.
+# This is disabled by default, but you can enable it here.
+# enableProguardInReleaseBuilds=true
+# Enable the network inspector.
+# This is enabled by default, but you can disable it here.
+# networkInspectorEnabled=true
+# Enable the new architecture.
+# This is disabled by default, but you can enable it here.
+# newArchEnabled=true
+# Enable the new app bundle format for React Native 0.64.0 and above.
+# This is disabled by default, but you can enable it here.
+# bundleInDebug=true
+# Enable the new Hermes debugger.
+# This is disabled by default, but you can enable it here.
+# hermesEnabled=true
+# Enable ProGuard in release builds.
+# This is disabled by default, but you can enable it here.
+# enableProguardInReleaseBuilds=true
+# Enable the network inspector.
+# This is enabled by default, but you can disable it here.
+# networkInspectorEnabled=true

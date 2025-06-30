@@ -1,0 +1,128 @@
+# EditorConfig is awesome: https://EditorConfig.org
+
+# top-most EditorConfig file
+root = true
+
+# Unix-style newlines with a newline ending every file
+[*]
+charset = utf-8
+end_of_line = lf
+insert_final_newline = true
+trim_trailing_whitespace = true
+indent_style = space
+indent_size = 2
+
+# Matches multiple files with brace expansion notation
+[*.{js,jsx,ts,tsx,json,css,scss,md}]
+indent_size = 2
+
+[*.{py,rb,go,java,kt,gradle}]
+indent_size = 4
+
+[*.{xml,html}]
+indent_size = 2
+
+# Shell scripts
+[*.sh]
+indent_style = space
+indent_size = 2
+
+# Makefiles use real tabs
+[Makefile]
+indent_style = tab
+
+# Batch files use CRLF
+[*.{cmd,bat}]
+end_of_line = crlf
+
+# Git merge files
+[*.{diff,md,mdx}]
+trim_trailing_whitespace = false
+
+# Markdown files
+[*.md]
+trim_trailing_whitespace = false
+
+# YAML files
+[*.{yaml,yml}]
+indent_size = 2
+
+# JSON files
+[*.json]
+indent_size = 2
+
+# Python files
+[*.py]
+indent_size = 4
+
+# Java files
+[*.{java,kt}]
+indent_size = 4
+
+# C/C++ files
+[*.{c,cpp,h,hpp,cc,hh}]
+indent_size = 4
+
+# Objective-C files
+[*.{m,mm,h}]
+indent_size = 4
+
+# Swift files
+[*.swift]
+indent_size = 4
+
+# Ruby files
+[*.rb]
+indent_size = 2
+
+# Go files
+[*.go]
+indent_style = tab
+
+# PHP files
+[*.php]
+indent_size = 4
+
+# SQL files
+[*.sql]
+indent_size = 2
+
+# Docker files
+[Dockerfile*]
+indent_size = 4
+
+# Shell scripts
+[*.sh]
+indent_size = 2
+
+# Ignore package-lock.json and yarn.lock
+[package-lock.json]
+insert_final_newline = false
+
+[yarn.lock]
+insert_final_newline = false
+
+# Markdown files
+[*.md]
+max_line_length = off
+trim_trailing_whitespace = false
+
+# JSON files
+[*.json]
+quote_type = double
+
+# Python files
+[*.py]
+max_line_length = 88
+
+# Java files
+[*.java]
+max_line_length = 100
+
+# TypeScript/JavaScript files
+[*.{ts,tsx,js,jsx}]
+max_line_length = 100
+
+# CSS/SCSS files
+[*.{css,scss}]
+indent_size = 2

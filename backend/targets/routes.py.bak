@@ -1,0 +1,227 @@
+import csv
+import io
+from typing import List, Optional
+from fastapi import APIRouter, Depends, HTTPException, UploadFile, status, BackgroundTasks
+from sqlalchemy.orm import Session
+from datetime import datetime
+
+from database import get_db
+from . import crud, schemas
+from models import User, CampaignContact as TargetContact
+from auth.dependencies import get_current_user
+
+router = APIRouter(
+    prefix="/api/targets",
+    tags=["targets"],
+    dependencies=[Depends(get_current_user)]
+)
+
+@router.post("/lists/", response_model=schemas.TargetList)
+def create_target_list(
+    target_list: schemas.TargetListCreate,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user)
+):
+    """
+    Create a new target list
+    """
+    return crud.create_target_list(db=db, target_list=target_list)
+
+def process_csv_import(
+    file: UploadFile, 
+    db: Session, 
+    list_id: int, 
+    field_mapping: dict
+):
+    try:
+        # Update list status to processing
+        db_list = crud.get_target_list(db, list_id)
+        if not db_list:
+            return
+        
+        db_list.status = schemas.ImportStatus.PROCESSING
+        db.commit()
+        db.refresh(db_list)
+        
+        # Read and process the CSV file
+        content = file.file.read().decode('utf-8')
+        csv_reader = csv.DictReader(io.StringIO(content))
+        
+        required_fields = ['voter_id', 'first_name', 'last_name', 'zip_code']
+        mapped_fields = {v: k for k, v in field_mapping.items() if v in required_fields}
+        
+        # Check if all required fields are mapped
+        missing_fields = [f for f in required_fields if f not in mapped_fields]
+        if missing_fields:
+            db_list.status = schemas.ImportStatus.FAILED
+            db_list.error_message = f"Missing required field mappings: {', '.join(missing_fields)}"
+            db.commit()
+            return
+        
+        # Process contacts in batches
+        batch_size = 1000
+        batch = []
+        total_imported = 0
+        total_failed = 0
+        
+        for row in csv_reader:
+            try:
+                # Map CSV columns to our model fields
+                contact_data = {}
+                for model_field, csv_field in field_mapping.items():
+                    if csv_field in row and row[csv_field].strip():
+                        contact_data[model_field] = row[csv_field].strip()
+                
+                # Skip if required fields are missing
+                if not all(field in contact_data for field in required_fields):
+                    total_failed += 1
+                    continue
+                
+                # Create contact
+                contact = schemas.TargetContactCreate(**contact_data)
+                batch.append(contact.dict())
+                
+                # Insert batch when it reaches the batch size
+                if len(batch) >= batch_size:
+                    crud.bulk_create_target_contacts(db, batch, list_id)
+                    total_imported += len(batch)
+                    batch = []
+                    
+                    # Update progress
+                    db_list.imported_contacts = total_imported
+                    db_list.failed_contacts = total_failed
+                    db.commit()
+                    
+            except Exception as e:
+                total_failed += 1
+                continue
+        
+        # Insert any remaining contacts
+        if batch:
+            crud.bulk_create_target_contacts(db, batch, list_id)
+            total_imported += len(batch)
+        
+        # Update list status
+        db_list.status = schemas.ImportStatus.COMPLETED
+        db_list.imported_contacts = total_imported
+        db_list.failed_contacts = total_failed
+        db_list.total_contacts = total_imported + total_failed
+        db.commit()
+        
+    except Exception as e:
+        # Update list status to failed if any error occurs
+        db.rollback()
+        if 'db_list' in locals():
+            db_list.status = schemas.ImportStatus.FAILED
+            db_list.error_message = str(e)
+            db.commit()
+
+@router.post("/import", response_model=schemas.TargetList)
+async def import_targets(
+    background_tasks: BackgroundTasks,
+    file: UploadFile,
+    import_request: schemas.TargetImportRequest,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user)
+):
+    # Create the target list
+    db_list = crud.create_target_list(db, schemas.TargetListCreate(
+        name=import_request.list_name,
+        description=f"Imported from {file.filename}"
+    ))
+    
+    # Start background task to process the CSV
+    background_tasks.add_task(
+        process_csv_import,
+        file=file,
+        db=db,
+        list_id=db_list.id,
+        field_mapping=import_request.field_mapping
+    )
+    
+    return db_list
+
+@router.get("/lists", response_model=schemas.TargetListResponse)
+def get_all_lists(
+    skip: int = 0,
+    limit: int = 100,
+    status: Optional[str] = None,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user)
+):
+    lists = crud.get_target_lists(db, skip=skip, limit=limit, status=status)
+    total = len(crud.get_target_lists(db))
+    return {"lists": lists, "total": total}
+
+@router.get("/lists/{list_id}", response_model=schemas.TargetList)
+def get_list(
+    list_id: int,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user)
+):
+    db_list = crud.get_target_list(db, list_id)
+    if not db_list:
+        raise HTTPException(status_code=404, detail="Target list not found")
+    return db_list
+
+@router.get("/contacts", response_model=schemas.TargetContactResponse)
+def get_contacts(
+    list_id: Optional[int] = None,
+    skip: int = 0,
+    limit: int = 100,
+    search: Optional[str] = None,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user)
+):
+    contacts = crud.get_target_contacts(
+        db, 
+        list_id=list_id, 
+        skip=skip, 
+        limit=limit,
+        search=search
+    )
+    total = crud.count_target_contacts(db, list_id=list_id, search=search)
+    
+    response = {
+        "contacts": contacts,
+        "total": total
+    }
+    
+    if list_id:
+        db_list = crud.get_target_list(db, list_id)
+        if db_list:
+            response["list_id"] = list_id
+            response["list_name"] = db_list.name
+    
+    return response
+
+@router.get("/contacts/{contact_id}", response_model=schemas.TargetContact)
+def get_contact(
+    contact_id: int,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user)
+):
+    contact = db.query(TargetContact).filter(TargetContact.id == contact_id).first()
+    if not contact:
+        raise HTTPException(status_code=404, detail="Contact not found")
+    return contact
+
+@router.delete("/lists/{list_id}", status_code=status.HTTP_204_NO_CONTENT)
+def delete_list(
+    list_id: int,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user)
+):
+    if not crud.delete_target_list(db, list_id):
+        raise HTTPException(status_code=404, detail="Target list not found")
+    return None
+
+@router.delete("/contacts/{contact_id}", status_code=status.HTTP_204_NO_CONTENT)
+def delete_contact(
+    contact_id: int,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user)
+):
+    if not crud.delete_target_contact(db, contact_id):
+        raise HTTPException(status_code=404, detail="Contact not found")
+    return None

@@ -1,0 +1,4 @@
+voter_id,first_name,last_name,email,phone_number,address,city,state,zip_code
+v12345,John,Doe,john.doe@example.com,555-123-4567,123 Main St,Anytown,CA,90210
+v12346,Jane,Smith,jane.smith@example.com,555-987-6543,456 Oak Ave,Sometown,NY,10001
+v12347,Robert,Johnson,robert.j@example.com,555-555-7890,789 Pine Rd,Othercity,TX,73301

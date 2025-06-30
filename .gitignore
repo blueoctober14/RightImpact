@@ -1,0 +1,96 @@
+# Dependencies
+node_modules/
+.pnp
+.pnp.js
+
+# Testing
+coverage/
+
+# Production
+build/
+dist/
+
+# Misc
+.DS_Store
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# Debug logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Local development
+.env
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# Android/IntelliJ
+build/
+.idea
+.gradle
+local.properties
+*.iml
+*.hprof
+.cxx/
+*.keystore
+!debug.keystore
+
+# iOS
+ios/Pods/
+ios/*.xcworkspace
+ios/*.xcodeproj/xcuserdata/
+ios/*.xcodeproj/project.xcworkspace/xcuserdata/
+ios/*.xcodeproj/project.xcworkspace/xcshareddata/
+ios/*.xcshareddata/
+ios/*.xcuserstate
+ios/Podfile.lock
+ios/Podfile.local
+ios/Podfile.temp
+ios/Podfile.temp.*
+ios/Podfile.temp.*.lock
+
+# FastAPI
+__pycache__/
+*.py[cod]
+*$py.class
+
+# SQLite
+*.sqlite
+*.sqlite3
+
+# Environment variables
+.env
+
+# Logs
+logs
+*.log
+
+# Local development
+*.local
+
+# Backend specific
+/backend/.venv/
+/backend/venv/
+/backend/env/
+/backend/.pytest_cache/
+/backend/.mypy_cache/
+
+# Admin panel
+/admin/.next/
+/admin/out/
+
+# Mobile app
+/ios/build/
+/android/app/build/
+/android/app/debug.keystore
+
+# System Files
+.DS_Store
+Thumbs.db
