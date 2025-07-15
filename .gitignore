@@ -94,3 +94,7 @@ logs
 # System Files
 .DS_Store
 Thumbs.db
+backend/config/*.json
+*.env
+*.key
+*.pem
